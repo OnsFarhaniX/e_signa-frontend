@@ -21,7 +21,7 @@ function Sidebar() {
     <div className="w-64 min-h-screen bg-blue-700 text-white flex flex-col">
       <div className="p-6 border-b border-blue-600">
         <h1 className="text-xl font-bold"> E-Signature</h1>
-        <p className="text-blue-200 text-sm mt-1">Signature Platform</p>
+       
       </div>
       <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => (
