@@ -4,7 +4,6 @@ const API = axios.create({
   baseURL: 'http://localhost:8080',
 })
 
-// Ajoute le token automatiquement
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token')
   if (token) {
@@ -33,20 +32,34 @@ export const deleteClient = (id: string) => API.delete(`/api/clients/${id}`)
 export const getInvoices = () => API.get('/api/invoices')
 export const getInvoiceById = (id: string) => API.get(`/api/invoices/${id}`)
 export const createInvoice = (data: object) => API.post('/api/invoices', data)
+export const updateInvoice = (id: string, data: object) => API.put(`/api/invoices/${id}`, data)
 export const deleteInvoice = (id: string) => API.delete(`/api/invoices/${id}`)
-export const signInvoice = (id: string, passphrase: string) =>
-  API.post(`/api/signature/invoices/${id}/sign`, { passphrase })
-// Download PDF
-export const downloadInvoicePDF = (id: string) =>
-  API.get(`/api/invoices/${id}/pdf`, { responseType: 'blob' })
+export const getInvoicesByStatus = (status: string) => API.get(`/api/invoices/status/${status}`)
+export const downloadInvoicePDF = (id: string) => API.get(`/api/invoices/${id}/pdf`, { responseType: 'blob' })
+export const submitToTNN = (id: string) => API.post(`/api/invoices/${id}/submit-tnn`)
 
 // Signature Keys
 export const getSignatureKeys = () => API.get('/api/signature/keys')
+export const getActiveKey = () => API.get('/api/signature/keys/active')
 export const generateKey = (data: object) => API.post('/api/signature/keys/generate', data)
 export const revokeKey = (id: string) => API.post(`/api/signature/keys/${id}/revoke`)
+export const signInvoice = (id: string, passphrase: string) =>
+  API.post(`/api/signature/invoices/${id}/sign`, { passphrase })
 
-// Admin
-export const getUsers = () => API.get('/api/auth/users').catch(() => ({ data: [] }))
-export const createUser = (data: object) => API.post('/api/auth/register', data)
+// Templates
+export const getTemplates = () => API.get('/api/templates')
+export const getTemplateById = (id: string) => API.get(`/api/templates/${id}`)
+export const getDefaultTemplate = () => API.get('/api/templates/default')
+export const createTemplate = (data: object) => API.post('/api/templates', data)
+export const updateTemplate = (id: string, data: object) => API.put(`/api/templates/${id}`, data)
+export const deleteTemplate = (id: string) => API.delete(`/api/templates/${id}`)
+export const setDefaultTemplate = (id: string) => API.post(`/api/templates/${id}/set-default`)
+
+// Company Settings
+export const getCompanySettings = () => API.get('/api/settings')
+export const saveCompanySettings = (data: object) => API.post('/api/settings', data)
+export const updateCompanySettings = (data: object) => API.put('/api/settings', data)
+
+
 
 export default API

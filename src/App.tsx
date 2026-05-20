@@ -7,7 +7,7 @@ import ClientsPage from './pages/ClientsPage'
 import SignaturesPage from './pages/SignaturesPage'
 import SettingsPage from './pages/SettingsPage'
 import CreateInvoicePage from './pages/CreateInvoicePage'
-import AdminPage from './pages/AdminPage'
+import TemplatesPage from './pages/TemplatesPage'
 
 function App() {
   return (
@@ -21,8 +21,9 @@ function App() {
         <Route path="/invoices/new" element={<CreateInvoicePage />} />
         <Route path="/clients" element={<ClientsPage />} />
         <Route path="/signatures" element={<SignaturesPage />} />
+        <Route path="/templates" element={<TemplatesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
-        <Route path="/admin" element={<AdminPage />} />
+       
       </Routes>
     </BrowserRouter>
   )
