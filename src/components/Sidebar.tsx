@@ -15,25 +15,6 @@ function Sidebar() {
     { path: '/signatures', label: ' Signatures' },
     { path: '/settings', label: 'Settings' },
   ]
-  const menuGroups = [
-  {
-    label: 'MAIN',
-    items: [
-      { path: '/dashboard', label: 'Dashboard', icon: 'H' },
-      { path: '/invoices', label: 'Invoices', icon: 'I' },
-      { path: '/clients', label: 'Clients', icon: 'C' },
-      { path: '/templates', label: 'Templates', icon: 'T' },
-    ]
-  },
-  {
-    label: 'MANAGEMENT',
-    items: [
-      { path: '/signatures', label: 'Signatures', icon: 'S' },
-      { path: '/admin', label: 'Users', icon: 'U' },
-      { path: '/settings', label: 'Settings', icon: 'G' },
-    ]
-  }
-]
 
   return (
     <div className="w-64 min-h-screen bg-blue-700 text-white flex flex-col">

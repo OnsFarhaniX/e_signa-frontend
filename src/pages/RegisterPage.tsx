@@ -10,13 +10,13 @@ function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    role: 'USER'
+    
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [loading, setLoading] = useState(false)
-  const [agreed, setAgreed] = useState(false)
+  
 
   const validate = () => {
     const newErrors: Record<string, string> = {}
@@ -26,7 +26,7 @@ function RegisterPage() {
     if (!form.password) newErrors.password = 'Password is required'
     if (form.password.length < 8) newErrors.password = 'Password must be at least 8 characters'
     if (form.password !== form.confirmPassword) newErrors.confirmPassword = 'Passwords do not match'
-    if (!agreed) newErrors.agreed = 'You must agree to the Terms of Service'
+    
     return newErrors
   }
 
@@ -44,7 +44,7 @@ function RegisterPage() {
         lastName: form.lastName,
         email: form.email,
         password: form.password,
-        role: form.role
+        
       })
       navigate('/login')
     } catch (err: any) {
@@ -161,7 +161,7 @@ function RegisterPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? '*' : 'show'}
+                {showPassword ? 'hide' : 'show'}
               </button>
             </div>
             {errors.password && (
@@ -189,7 +189,7 @@ function RegisterPage() {
                 onClick={() => setShowConfirm(!showConfirm)}
                 className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
               >
-                {showConfirm ? '*' : 'show'}
+                {showConfirm ? 'hide' : 'show'}
               </button>
             </div>
             {errors.confirmPassword && (
