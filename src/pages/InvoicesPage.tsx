@@ -290,10 +290,6 @@ function InvoicesPage() {
             )}
             <div className="mb-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">Signing key passphrase</label>
-              
-              
-              
-              
               <input
                 type="password"
                 value={passphrase}
@@ -302,14 +298,9 @@ function InvoicesPage() {
                 onKeyDown={(e) => e.key === 'Enter' && handleSign()}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              
+            
 
-
-
-
-
-
-            </div>
+</div>
             <div className="flex gap-3">
               <button onClick={() => setShowSignModal(false)}
                 className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50">

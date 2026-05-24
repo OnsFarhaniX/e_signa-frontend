@@ -165,7 +165,7 @@ function SettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
                     <input type="text" value={company.companyName}
                       onChange={(e) => setCompany({ ...company, companyName: e.target.value })}
-                      placeholder="My Company LLC"
+                      placeholder="Company Name "
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -173,7 +173,7 @@ function SettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID *</label>
                     <input type="text" value={company.taxId}
                       onChange={(e) => setCompany({ ...company, taxId: e.target.value })}
-                      placeholder="1234567ABC"
+                      placeholder="Tax ID "
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -182,7 +182,7 @@ function SettingsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
                   <textarea value={company.address}
                     onChange={(e) => setCompany({ ...company, address: e.target.value })}
-                    placeholder="Full address" rows={2}
+                    placeholder="Address" rows={2}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -199,7 +199,7 @@ function SettingsPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                     <input type="email" value={company.email}
                       onChange={(e) => setCompany({ ...company, email: e.target.value })}
-                      placeholder="contact@company.com"
+                      placeholder="Email"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
