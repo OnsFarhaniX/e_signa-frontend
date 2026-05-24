@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
-import { getInvoices, deleteInvoice, downloadInvoicePDF, signInvoice, submitToTNN } from '../api/auth'
+import { getInvoices, deleteInvoice, downloadInvoicePDF, signInvoice, submitToTNN, getActiveKey } from '../api/auth'
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   DRAFT:           { label: 'Draft',       color: 'bg-gray-100 text-gray-600' },
@@ -92,21 +92,33 @@ function InvoicesPage() {
   }
 
   const handleSign = async () => {
-    if (!passphrase) { setSignError('Passphrase is required'); return }
-    try {
-      setSigning(true)
-      setSignError('')
-      await signInvoice(selectedInvoice.id, passphrase)
-      setShowSignModal(false)
-      setPassphrase('')
-      fetchInvoices()
-    } catch (err: any) {
-      setSignError(err.response?.data?.message || 'Invalid passphrase or no active key')
-    } finally {
-      setSigning(false)
-    }
-  }
+  if (!passphrase) { setSignError('Passphrase is required'); return }
+  try {
+    setSigning(true)
+    setSignError('')
 
+    // Récupère la clé active
+    const keyRes = await getActiveKey()
+    const activeKeyId = keyRes.data?.id || keyRes.data?.data?.id
+
+    if (!activeKeyId) {
+      setSignError('No active signature key found. Please generate a key first.')
+      return
+    }
+
+    // Signe avec keyId + passphrase
+    await signInvoice(selectedInvoice.id, passphrase, activeKeyId)
+
+    setShowSignModal(false)
+    setPassphrase('')
+    fetchInvoices()
+    alert('Invoice signed successfully!')
+  } catch (err: any) {
+    setSignError(err.response?.data?.message || 'Invalid passphrase or signing failed')
+  } finally {
+    setSigning(false)
+  }
+}
   const filtered = invoices.filter((inv) => {
     const matchSearch =
       inv.invoiceNumber?.toLowerCase().includes(search.toLowerCase()) ||

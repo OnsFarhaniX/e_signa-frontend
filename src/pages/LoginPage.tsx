@@ -104,7 +104,7 @@ function LoginPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
               >
-                {showPassword ? '*' : 'show'}
+                {showPassword ? 'hide' : 'show'}
               </button>
             </div>
           </div>

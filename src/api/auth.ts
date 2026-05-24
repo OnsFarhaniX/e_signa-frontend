@@ -43,8 +43,8 @@ export const getSignatureKeys = () => API.get('/api/signature/keys')
 export const getActiveKey = () => API.get('/api/signature/keys/active')
 export const generateKey = (data: object) => API.post('/api/signature/keys/generate', data)
 export const revokeKey = (id: string) => API.post(`/api/signature/keys/${id}/revoke`)
-export const signInvoice = (id: string, passphrase: string) =>
-  API.post(`/api/signature/invoices/${id}/sign`, { passphrase })
+export const signInvoice = (id: string, passphrase: string, signatureKeyId: string) =>
+  API.post(`/api/signature/invoices/${id}/sign`, { passphrase, signatureKeyId })
 
 // Templates
 export const getTemplates = () => API.get('/api/templates')
