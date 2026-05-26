@@ -14,6 +14,7 @@ function Sidebar() {
     { path: '/clients', label: ' Clients' },
     { path: '/signatures', label: ' Signatures' },
     { path: '/settings', label: 'Settings' },
+    { path: '/templates', label: 'Templates' },
   ]
 
   return (
