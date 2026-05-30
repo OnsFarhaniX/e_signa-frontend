@@ -10,22 +10,24 @@ function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-    try {
-      const data = await login(email, password)
-      const token = data.accessToken || data.token || data.data?.accessToken
-      if (!token) { setError('Authentication failed'); return }
-      localStorage.setItem('token', token)
-      navigate('/dashboard')
-    } catch (err: any) {
-      setError('Invalid email or password')
-    } finally {
-      setLoading(false)
-    }
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setError('')
+  setLoading(true)
+  try {
+    const data = await login(email, password)
+    const token = data.accessToken || data.token || data.data?.accessToken
+    const role = data.role || data.data?.role || 'USER'
+    if (!token) { setError('Authentication failed'); return }
+    localStorage.setItem('token', token)
+    localStorage.setItem('role', role)
+    navigate('/dashboard')
+  } catch (err: any) {
+    setError('Invalid email or password')
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <div className="min-h-screen flex">
