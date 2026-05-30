@@ -10,63 +10,24 @@ import CreateInvoicePage from './pages/CreateInvoicePage'
 import AdminPage from './pages/AdminPage'
 import TemplatesPage from './pages/TemplatesPage'
 
-// Protection des routes
-const ProtectedRoute = ({ children, adminOnly = false }: { children: any, adminOnly?: boolean }) => {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
-
-  if (!token) return <Navigate to="/login" />
-  if (adminOnly && role !== 'ADMIN') return <Navigate to="/dashboard" />
-  return children
-}
-
-const UserRoute = ({ children }: { children: any }) => {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
-
-  if (!token) return <Navigate to="/login" />
-  if (role === 'ADMIN') return <Navigate to="/dashboard" />
-  return children
-}
+const token = () => localStorage.getItem('token')
+const role = () => localStorage.getItem('role')
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-
-        {/* Common — Admin + User */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute><DashboardPage /></ProtectedRoute>
-        } />
-
-        {/* User only */}
-        <Route path="/invoices" element={
-          <UserRoute><InvoicesPage /></UserRoute>
-        } />
-        <Route path="/invoices/new" element={
-          <UserRoute><CreateInvoicePage /></UserRoute>
-        } />
-        <Route path="/clients" element={
-          <UserRoute><ClientsPage /></UserRoute>
-        } />
-        <Route path="/templates" element={
-          <UserRoute><TemplatesPage /></UserRoute>
-        } />
-        <Route path="/signatures" element={
-          <UserRoute><SignaturesPage /></UserRoute>
-        } />
-
-        {/* Admin only */}
-        <Route path="/admin" element={
-          <ProtectedRoute adminOnly><AdminPage /></ProtectedRoute>
-        } />
-        <Route path="/settings" element={
-          <ProtectedRoute adminOnly><SettingsPage /></ProtectedRoute>
-        } />
+        <Route path="/dashboard" element={token() ? <DashboardPage /> : <Navigate to="/login" />} />
+        <Route path="/invoices" element={token() ? <InvoicesPage /> : <Navigate to="/login" />} />
+        <Route path="/invoices/new" element={token() ? <CreateInvoicePage /> : <Navigate to="/login" />} />
+        <Route path="/clients" element={token() ? <ClientsPage /> : <Navigate to="/login" />} />
+        <Route path="/templates" element={token() ? <TemplatesPage /> : <Navigate to="/login" />} />
+        <Route path="/signatures" element={token() ? <SignaturesPage /> : <Navigate to="/login" />} />
+        <Route path="/admin" element={token() && role() === 'ADMIN' ? <AdminPage /> : <Navigate to="/login" />} />
+        <Route path="/settings" element={token() && role() === 'ADMIN' ? <SettingsPage /> : <Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>
   )
