@@ -1,13 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Sidebar from '../components/Sidebar'
-import { getCompanySettings, saveCompanySettings, updateCompanySettings } from '../api/auth'
 
 function SettingsPage() {
   const [activeTab, setActiveTab] = useState('company')
-  const [loading, setLoading] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [success, setSuccess] = useState('')
-  const [hasSettings, setHasSettings] = useState(false)
 
   const [company, setCompany] = useState({
     companyName: '',
@@ -34,62 +29,15 @@ function SettingsPage() {
     tnnCompanyId: ''
   })
 
-  useEffect(() => { fetchSettings() }, [])
-
-  const fetchSettings = async () => {
-    try {
-      setLoading(true)
-      const res = await getCompanySettings()
-      const data = res.data
-      if (data) {
-        setHasSettings(true)
-        setCompany({
-          companyName: data.companyName || '',
-          taxId: data.taxId || '',
-          address: data.address || '',
-          phone: data.phone || '',
-          email: data.email || '',
-          defaultCurrency: data.defaultCurrency || 'TND',
-          defaultVatRate: data.defaultVatRate || 19,
-          invoicePrefix: data.invoicePrefix || 'INV',
-          invoiceNumberDigits: data.invoiceNumberDigits || 5
-        })
-        setSmtp({
-          smtpHost: data.smtpHost || '',
-          smtpPort: data.smtpPort || 587,
-          smtpUsername: data.smtpUsername || '',
-          smtpPassword: ''
-        })
-        setTnn({
-          tnnApiKey: '',
-          tnnEndpointUrl: data.tnnEndpointUrl || '',
-          tnnCompanyId: data.tnnCompanyId || ''
-        })
-      }
-    } catch (err) {
-      console.log('No settings found yet')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const handleSave = async () => {
-    try {
-      setSaving(true)
-      const data = { ...company, ...smtp, ...tnn }
-      if (hasSettings) {
-        await updateCompanySettings(data)
-      } else {
-        await saveCompanySettings(data)
-        setHasSettings(true)
-      }
-      setSuccess('Settings saved successfully!')
-      setTimeout(() => setSuccess(''), 3000)
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Error saving settings')
-    } finally {
-      setSaving(false)
-    }
+  // NOTE: /api/settings endpoint does not exist in the backend.
+  // Settings are stored directly in the database (company_settings table).
+  // This page is display-only. The admin must insert settings via pgAdmin or SQL.
+  const handleSave = () => {
+    alert(
+      'Settings are managed directly in the database.\n\n' +
+      'Please use pgAdmin to update the company_settings table.\n\n' +
+      'Your administrator can run the SQL INSERT or UPDATE command.'
+    )
   }
 
   const tabs = [
@@ -97,20 +45,6 @@ function SettingsPage() {
     { id: 'email', label: 'Email SMTP' },
     { id: 'tnn', label: 'TNN Service' },
   ]
-
-  if (loading) {
-    return (
-      <div className="flex min-h-screen bg-gray-50">
-        <Sidebar />
-        <main className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-            <p className="text-gray-500 text-sm">Loading settings...</p>
-          </div>
-        </main>
-      </div>
-    )
-  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -129,14 +63,14 @@ function SettingsPage() {
         <main className="flex-1 p-8">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
-            <p className="text-gray-500 text-sm mt-1">Configure your platform</p>
+            <p className="text-gray-500 text-sm mt-1">Platform configuration reference</p>
           </div>
 
-          {success && (
-            <div className="bg-green-50 text-green-700 px-4 py-3 rounded-xl mb-6 text-sm border border-green-200">
-              {success}
-            </div>
-          )}
+          {/* Info banner */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 mb-6 text-sm text-blue-700">
+            These settings are configured directly in the database by the administrator.
+            Contact your DBA to update company_settings via pgAdmin or SQL.
+          </div>
 
           {/* Tabs */}
           <div className="flex gap-1 mb-6 bg-white border border-gray-200 rounded-xl p-1 w-fit">
@@ -162,18 +96,18 @@ function SettingsPage() {
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
                     <input type="text" value={company.companyName}
                       onChange={(e) => setCompany({ ...company, companyName: e.target.value })}
-                      placeholder="Company Name "
+                      placeholder="Company Name"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID</label>
                     <input type="text" value={company.taxId}
                       onChange={(e) => setCompany({ ...company, taxId: e.target.value })}
-                      placeholder="Tax ID "
+                      placeholder="Tax ID"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -232,9 +166,9 @@ function SettingsPage() {
                     />
                   </div>
                 </div>
-                <button onClick={handleSave} disabled={saving}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50">
-                  {saving ? 'Saving...' : 'Save Changes'}
+                <button onClick={handleSave}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                  View Instructions
                 </button>
               </div>
             </div>
@@ -278,9 +212,9 @@ function SettingsPage() {
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <button onClick={handleSave} disabled={saving}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50">
-                  {saving ? 'Saving...' : 'Save'}
+                <button onClick={handleSave}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                  View Instructions
                 </button>
               </div>
             </div>
@@ -315,9 +249,9 @@ function SettingsPage() {
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <button onClick={handleSave} disabled={saving}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold disabled:opacity-50">
-                  {saving ? 'Saving...' : 'Save'}
+                <button onClick={handleSave}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
+                  View Instructions
                 </button>
               </div>
             </div>

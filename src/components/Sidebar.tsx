@@ -13,16 +13,15 @@ function Sidebar() {
 
   const userMenuGroups = [
     {
-      
+      label: 'MAIN',
       items: [
-        { path: '/dashboard', label: 'Dashboard' },
-        { path: '/invoices', label: 'Invoices' },
-        { path: '/clients', label: 'Clients' },
-        { path: '/templates', label: 'Templates' },
-        { path: '/signatures', label: 'Signatures'},
+        { path: '/dashboard', label: 'Dashboard', icon: 'H' },
+        { path: '/invoices', label: 'Invoices', icon: 'I' },
+        { path: '/clients', label: 'Clients', icon: 'C' },
+        { path: '/templates', label: 'Templates', icon: 'T' },
+        { path: '/signatures', label: 'Signatures', icon: 'S' },
       ]
     },
-    
   ]
 
   const adminMenuGroups = [

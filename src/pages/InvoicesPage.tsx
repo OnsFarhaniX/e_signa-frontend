@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
-import { getInvoices, deleteInvoice, downloadInvoicePDF, signInvoice, submitToTNN, getActiveKey } from '../api/auth'
+import { getInvoices, deleteInvoice, downloadInvoicePDF, signInvoice, getActiveKey } from '../api/auth'
 
 const statusConfig: Record<string, { label: string; color: string }> = {
   DRAFT:           { label: 'Draft',       color: 'bg-gray-100 text-gray-600' },
@@ -20,7 +20,6 @@ function InvoicesPage() {
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState('ALL')
   const [downloading, setDownloading] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState<string | null>(null)
   const [showSignModal, setShowSignModal] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null)
   const [passphrase, setPassphrase] = useState('')
@@ -70,20 +69,6 @@ function InvoicesPage() {
     }
   }
 
-  const handleSubmitTNN = async (id: string) => {
-    if (!window.confirm('Submit this invoice to TNN?')) return
-    try {
-      setSubmitting(id)
-      await submitToTNN(id)
-      alert('Invoice submitted to TNN successfully!')
-      fetchInvoices()
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Error submitting to TNN')
-    } finally {
-      setSubmitting(null)
-    }
-  }
-
   const openSignModal = (invoice: any) => {
     setSelectedInvoice(invoice)
     setPassphrase('')
@@ -92,33 +77,34 @@ function InvoicesPage() {
   }
 
   const handleSign = async () => {
-  if (!passphrase) { setSignError('Passphrase is required'); return }
-  try {
-    setSigning(true)
-    setSignError('')
+    if (!passphrase) { setSignError('Passphrase is required'); return }
+    try {
+      setSigning(true)
+      setSignError('')
 
-    // Récupère la clé active
-    const keyRes = await getActiveKey()
-    const activeKeyId = keyRes.data?.id || keyRes.data?.data?.id
+      // Get active key first
+      const keyRes = await getActiveKey()
+      const activeKeyId = keyRes.data?.id || keyRes.data?.data?.id
 
-    if (!activeKeyId) {
-      setSignError('No active signature key found. Please generate a key first.')
-      return
+      if (!activeKeyId) {
+        setSignError('No active signature key found. Please generate a key first.')
+        return
+      }
+
+      // Sign with keyId + passphrase
+      await signInvoice(selectedInvoice.id, passphrase, activeKeyId)
+
+      setShowSignModal(false)
+      setPassphrase('')
+      fetchInvoices()
+      alert('Invoice signed successfully!')
+    } catch (err: any) {
+      setSignError(err.response?.data?.message || 'Invalid passphrase or signing failed')
+    } finally {
+      setSigning(false)
     }
-
-    // Signe avec keyId + passphrase
-    await signInvoice(selectedInvoice.id, passphrase, activeKeyId)
-
-    setShowSignModal(false)
-    setPassphrase('')
-    fetchInvoices()
-    alert('Invoice signed successfully!')
-  } catch (err: any) {
-    setSignError(err.response?.data?.message || 'Invalid passphrase or signing failed')
-  } finally {
-    setSigning(false)
   }
-}
+
   const filtered = invoices.filter((inv) => {
     const matchSearch =
       inv.invoiceNumber?.toLowerCase().includes(search.toLowerCase()) ||
@@ -227,15 +213,14 @@ function InvoicesPage() {
                               </button>
                             )}
 
-                            {/* Submit to TNN — Signed only */}
+                            {/* Send TNN — Signed only (not available yet, shown as info) */}
                             {invoice.status === 'SIGNED' && (
-                              <button
-                                onClick={() => handleSubmitTNN(invoice.id)}
-                                disabled={submitting === invoice.id}
-                                className="text-purple-600 hover:underline text-xs font-medium disabled:opacity-50"
+                              <span
+                                className="text-purple-400 text-xs italic"
+                                title="TNN integration not yet available in backend"
                               >
-                                {submitting === invoice.id ? 'Submitting...' : 'Send TNN'}
-                              </button>
+                                TNN pending
+                              </span>
                             )}
 
                             {/* PDF — Not draft */}
@@ -284,7 +269,11 @@ function InvoicesPage() {
               <p className="text-sm text-gray-600 mt-1">Client: <span className="font-semibold">{selectedInvoice.client?.name}</span></p>
               <p className="text-sm text-gray-600 mt-1">Amount: <span className="font-semibold">{selectedInvoice.totalAmount} TND</span></p>
             </div>
-            
+
+            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-5 text-xs text-yellow-700">
+              Warning: Once signed, this invoice cannot be modified.
+            </div>
+
             {signError && (
               <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{signError}</div>
             )}
@@ -298,9 +287,7 @@ function InvoicesPage() {
                 onKeyDown={(e) => e.key === 'Enter' && handleSign()}
                 className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-            
-
-</div>
+            </div>
             <div className="flex gap-3">
               <button onClick={() => setShowSignModal(false)}
                 className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50">

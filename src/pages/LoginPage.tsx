@@ -10,24 +10,25 @@ function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault()
-  setError('')
-  setLoading(true)
-  try {
-    const data = await login(email, password)
-    const token = data.accessToken || data.token || data.data?.accessToken
-    const role = data.role || data.data?.role || 'USER'
-    if (!token) { setError('Authentication failed'); return }
-    localStorage.setItem('token', token)
-    localStorage.setItem('role', role)
-    navigate('/dashboard')
-  } catch (err: any) {
-    setError('Invalid email or password')
-  } finally {
-    setLoading(false)
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+    setLoading(true)
+    try {
+      const data = await login(email, password)
+      // Backend returns: { accessToken, user: { role, ... } }
+      const token = data.accessToken || data.token
+      const role = data.user?.role || 'USER'
+      if (!token) { setError('Authentication failed'); return }
+      localStorage.setItem('token', token)
+      localStorage.setItem('role', role)
+      navigate('/dashboard')
+    } catch (err: any) {
+      setError('Invalid email or password')
+    } finally {
+      setLoading(false)
+    }
   }
-}
 
   return (
     <div className="min-h-screen flex">
@@ -110,6 +111,7 @@ function LoginPage() {
               </button>
             </div>
           </div>
+
           {/* Submit */}
           <button
             type="submit"
@@ -121,16 +123,10 @@ function LoginPage() {
 
         </form>
 
-      
       </div>
 
       {/* RIGHT SIDE — Visual */}
       <div className="hidden md:flex w-1/2 bg-gradient-to-br from-slate-800 via-slate-700 to-blue-900 flex-col items-center justify-center px-12 relative overflow-hidden">
-
-        
-        
-
-       
 
         {/* Content */}
         <div className="text-center text-white z-10 max-w-md">
