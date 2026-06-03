@@ -270,9 +270,7 @@ function InvoicesPage() {
               <p className="text-sm text-gray-600 mt-1">Amount: <span className="font-semibold">{selectedInvoice.totalAmount} TND</span></p>
             </div>
 
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-5 text-xs text-yellow-700">
-              Warning: Once signed, this invoice cannot be modified.
-            </div>
+            
 
             {signError && (
               <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{signError}</div>
