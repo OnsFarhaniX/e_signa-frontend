@@ -60,6 +60,9 @@ export const getCompanySettings = () => API.get('/api/settings')
 export const saveCompanySettings = (data: object) => API.post('/api/settings', data)
 export const updateCompanySettings = (data: object) => API.put('/api/settings', data)
 
+// Admin - Users
+export const getUsers = () => API.get('/api/admin/users')
+
 
 
 export default API

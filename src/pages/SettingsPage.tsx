@@ -20,7 +20,6 @@ function SettingsPage() {
     smtpHost: '',
     smtpPort: 587,
     smtpUsername: '',
-    smtpPassword: ''
   })
 
   const [tnn, setTnn] = useState({
@@ -33,11 +32,7 @@ function SettingsPage() {
   // Settings are stored directly in the database (company_settings table).
   // This page is display-only. The admin must insert settings via pgAdmin or SQL.
   const handleSave = () => {
-    alert(
-      'Settings are managed directly in the database.\n\n' +
-      'Please use pgAdmin to update the company_settings table.\n\n' +
-      'Your administrator can run the SQL INSERT or UPDATE command.'
-    )
+    
   }
 
   const tabs = [
@@ -65,13 +60,6 @@ function SettingsPage() {
             <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
             <p className="text-gray-500 text-sm mt-1">Platform configuration reference</p>
           </div>
-
-          {/* Info banner */}
-          <div className="bg-blue-50 border border-blue-200 rounded-xl px-5 py-4 mb-6 text-sm text-blue-700">
-            These settings are configured directly in the database by the administrator.
-            Contact your DBA to update company_settings via pgAdmin or SQL.
-          </div>
-
           {/* Tabs */}
           <div className="flex gap-1 mb-6 bg-white border border-gray-200 rounded-xl p-1 w-fit">
             {tabs.map((tab) => (
@@ -94,54 +82,81 @@ function SettingsPage() {
             <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-2xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Company Information</h3>
               <div className="space-y-4">
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-                    <input type="text" value={company.companyName}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Company Name
+                    </label>
+                    <input
+                      type="text"
+                      value={company.companyName}
                       onChange={(e) => setCompany({ ...company, companyName: e.target.value })}
                       placeholder="Company Name"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID</label>
-                    <input type="text" value={company.taxId}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tax ID
+                    </label>
+                    <input
+                      type="text"
+                      value={company.taxId}
                       onChange={(e) => setCompany({ ...company, taxId: e.target.value })}
                       placeholder="Tax ID"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                  <textarea value={company.address}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Address
+                  </label>
+                  <textarea
+                    value={company.address}
                     onChange={(e) => setCompany({ ...company, address: e.target.value })}
-                    placeholder="Address" rows={2}
+                    placeholder="Address"
+                    rows={2}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-                    <input type="text" value={company.phone}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Phone
+                    </label>
+                    <input
+                      type="text"
+                      value={company.phone}
                       onChange={(e) => setCompany({ ...company, phone: e.target.value })}
-                      placeholder="+216 xx xxx xxx"
+                      placeholder="+216 "
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input type="email" value={company.email}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      value={company.email}
                       onChange={(e) => setCompany({ ...company, email: e.target.value })}
                       placeholder="Email"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
+
+                <div className="grid grid-cols-4 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Currency</label>
-                    <select value={company.defaultCurrency}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Currency
+                    </label>
+                    <select
+                      value={company.defaultCurrency}
                       onChange={(e) => setCompany({ ...company, defaultCurrency: e.target.value })}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
@@ -151,25 +166,54 @@ function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Invoice Prefix</label>
-                    <input type="text" value={company.invoicePrefix}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Invoice Prefix
+                    </label>
+                    <input
+                      type="text"
+                      value={company.invoicePrefix}
                       onChange={(e) => setCompany({ ...company, invoicePrefix: e.target.value })}
                       placeholder="INV"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Default VAT %</label>
-                    <input type="number" value={company.defaultVatRate}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Default VAT %
+                    </label>
+                    <input
+                      type="number"
+                      value={company.defaultVatRate}
                       onChange={(e) => setCompany({ ...company, defaultVatRate: Number(e.target.value) })}
+                      min={0}
+                      max={100}
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Number Digits
+                    </label>
+                    <input
+                      type="number"
+                      value={company.invoiceNumberDigits}
+                      onChange={(e) => setCompany({ ...company, invoiceNumberDigits: Number(e.target.value) })}
+                      min={1}
+                      max={10}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
-                <button onClick={handleSave}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
-                  View Instructions
-                </button>
+
+                <div className="pt-2">
+                  <button
+                    onClick={handleSave}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
+                  >
+                    View Instructions
+                  </button>
+                </div>
+
               </div>
             </div>
           )}
@@ -179,43 +223,54 @@ function SettingsPage() {
             <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-2xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">Email SMTP Configuration</h3>
               <div className="space-y-4">
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">SMTP Host</label>
-                    <input type="text" value={smtp.smtpHost}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      SMTP Host
+                    </label>
+                    <input
+                      type="text"
+                      value={smtp.smtpHost}
                       onChange={(e) => setSmtp({ ...smtp, smtpHost: e.target.value })}
-                      placeholder="smtp.gmail.com"
+                      placeholder="smtp"
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Port</label>
-                    <input type="number" value={smtp.smtpPort}
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Port
+                    </label>
+                    <input
+                      type="number"
+                      value={smtp.smtpPort}
                       onChange={(e) => setSmtp({ ...smtp, smtpPort: Number(e.target.value) })}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                  <input type="text" value={smtp.smtpUsername}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Username
+                  </label>
+                  <input
+                    type="text"
+                    value={smtp.smtpUsername}
                     onChange={(e) => setSmtp({ ...smtp, smtpUsername: e.target.value })}
-                    placeholder="your-email@gmail.com"
+                    placeholder="email@gmail.com"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                  <input type="password" value={smtp.smtpPassword}
-                    onChange={(e) => setSmtp({ ...smtp, smtpPassword: e.target.value })}
-                    placeholder="••••••••"
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                <div className="pt-2">
+                  <button
+                    onClick={handleSave}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
+                  >
+                    View Instructions
+                  </button>
                 </div>
-                <button onClick={handleSave}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
-                  View Instructions
-                </button>
+
               </div>
             </div>
           )}
@@ -225,34 +280,54 @@ function SettingsPage() {
             <div className="bg-white rounded-xl border border-gray-200 p-8 max-w-2xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-6">TNN Service Configuration</h3>
               <div className="space-y-4">
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">TNN API Key</label>
-                  <input type="password" value={tnn.tnnApiKey}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    TNN API Key
+                  </label>
+                  <input
+                    type="password"
+                    value={tnn.tnnApiKey}
                     onChange={(e) => setTnn({ ...tnn, tnnApiKey: e.target.value })}
-                    placeholder="Your TNN API key"
+                    placeholder="TNN API key"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Endpoint URL</label>
-                  <input type="text" value={tnn.tnnEndpointUrl}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Endpoint URL
+                  </label>
+                  <input
+                    type="text"
+                    value={tnn.tnnEndpointUrl}
                     onChange={(e) => setTnn({ ...tnn, tnnEndpointUrl: e.target.value })}
-                    placeholder="https://api.tnn.tn/v1"
+                    placeholder="URL"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
+
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company ID</label>
-                  <input type="text" value={tnn.tnnCompanyId}
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Company ID
+                  </label>
+                  <input
+                    type="text"
+                    value={tnn.tnnCompanyId}
                     onChange={(e) => setTnn({ ...tnn, tnnCompanyId: e.target.value })}
-                    placeholder="Your TNN company ID"
+                    placeholder="TNN company ID"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
-                <button onClick={handleSave}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold">
-                  View Instructions
-                </button>
+                <div className="pt-2">
+                  <button
+                    onClick={handleSave}
+                    className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-semibold transition"
+                  >
+                    View Instructions
+                  </button>
+                </div>
+
               </div>
             </div>
           )}

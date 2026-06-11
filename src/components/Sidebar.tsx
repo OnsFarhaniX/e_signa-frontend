@@ -32,7 +32,7 @@ function Sidebar() {
       ]
     },
     {
-      label: 'ADMINISTRATION',
+      
       items: [
         { path: '/admin', label: 'Users' },
         { path: '/settings', label: 'Settings' },

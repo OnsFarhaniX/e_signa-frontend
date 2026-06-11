@@ -10,24 +10,34 @@ import CreateInvoicePage from './pages/CreateInvoicePage'
 import AdminPage from './pages/AdminPage'
 import TemplatesPage from './pages/TemplatesPage'
 
-const token = () => localStorage.getItem('token')
-const role = () => localStorage.getItem('role')
+function PrivateRoute({ children }: { children: JSX.Element }) {
+  const token = localStorage.getItem('token')
+  return token ? children : <Navigate to="/login" replace />
+}
+
+function AdminRoute({ children }: { children: JSX.Element }) {
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
+  return token && role === 'ADMIN' ? children : <Navigate to="/login" replace />
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/dashboard" element={token() ? <DashboardPage /> : <Navigate to="/login" />} />
-        <Route path="/invoices" element={token() ? <InvoicesPage /> : <Navigate to="/login" />} />
-        <Route path="/invoices/new" element={token() ? <CreateInvoicePage /> : <Navigate to="/login" />} />
-        <Route path="/clients" element={token() ? <ClientsPage /> : <Navigate to="/login" />} />
-        <Route path="/templates" element={token() ? <TemplatesPage /> : <Navigate to="/login" />} />
-        <Route path="/signatures" element={token() ? <SignaturesPage /> : <Navigate to="/login" />} />
-        <Route path="/admin" element={token() && role() === 'ADMIN' ? <AdminPage /> : <Navigate to="/login" />} />
-        <Route path="/settings" element={token() && role() === 'ADMIN' ? <SettingsPage /> : <Navigate to="/login" />} />
+
+        <Route path="/dashboard"    element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+        <Route path="/invoices"     element={<PrivateRoute><InvoicesPage /></PrivateRoute>} />
+        <Route path="/invoices/new" element={<PrivateRoute><CreateInvoicePage /></PrivateRoute>} />
+        <Route path="/clients"      element={<PrivateRoute><ClientsPage /></PrivateRoute>} />
+        <Route path="/templates"    element={<PrivateRoute><TemplatesPage /></PrivateRoute>} />
+        <Route path="/signatures"   element={<PrivateRoute><SignaturesPage /></PrivateRoute>} />
+
+        <Route path="/admin"    element={<AdminRoute><AdminPage /></AdminRoute>} />
+        <Route path="/settings" element={<AdminRoute><SettingsPage /></AdminRoute>} />
       </Routes>
     </BrowserRouter>
   )
