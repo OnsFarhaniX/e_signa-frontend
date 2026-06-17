@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import Sidebar from '../components/Sidebar'
-import { getClients, createClient, deleteClient } from '../api/auth'
+import { getClients, createClient, updateClient, deleteClient } from '../api/auth'
 
 function ClientsPage() {
   const [clients, setClients] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
   const [showModal, setShowModal] = useState(false)
+  const [editingId, setEditingId] = useState<string | null>(null)
   const [form, setForm] = useState({ name: '', email: '', phone: '', taxId: '', address: '' })
   const [error, setError] = useState('')
 
@@ -24,16 +25,41 @@ function ClientsPage() {
     }
   }
 
-  const handleCreate = async () => {
+  const openCreateModal = () => {
+    setEditingId(null)
+    setForm({ name: '', email: '', phone: '', taxId: '', address: '' })
+    setError('')
+    setShowModal(true)
+  }
+
+  const openEditModal = (client: any) => {
+    setEditingId(client.id)
+    setForm({
+      name: client.name || '',
+      email: client.email || '',
+      phone: client.phone || '',
+      taxId: client.taxId || '',
+      address: client.address || '',
+    })
+    setError('')
+    setShowModal(true)
+  }
+
+  const handleSave = async () => {
     if (!form.name) { setError('Name is required'); return }
     try {
-      await createClient(form)
+      if (editingId) {
+        await updateClient(editingId, form)
+      } else {
+        await createClient(form)
+      }
       setShowModal(false)
+      setEditingId(null)
       setForm({ name: '', email: '', phone: '', taxId: '', address: '' })
       setError('')
       fetchClients()
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Error creating client')
+      setError(err.response?.data?.message || 'Error saving client')
     }
   }
 
@@ -61,7 +87,7 @@ function ClientsPage() {
             <h2 className="text-2xl font-bold text-gray-800">Clients</h2>
             <p className="text-gray-500">Manage your clients</p>
           </div>
-          <button onClick={() => setShowModal(true)}
+          <button onClick={openCreateModal}
             className="bg-blue-600 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-700 transition">
             + New Client
           </button>
@@ -99,8 +125,12 @@ function ClientsPage() {
                       <td className="px-6 py-4 text-gray-600">{client.phone}</td>
                       <td className="px-6 py-4 text-gray-600">{client.taxId}</td>
                       <td className="px-6 py-4">
-                        <button onClick={() => handleDelete(client.id)}
-                          className="text-red-500 hover:underline text-xs">Delete</button>
+                        <div className="flex items-center gap-3">
+                          <button onClick={() => openEditModal(client)}
+                            className="text-blue-600 hover:underline text-xs font-medium">Edit</button>
+                          <button onClick={() => handleDelete(client.id)}
+                            className="text-red-500 hover:underline text-xs">Delete</button>
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -115,7 +145,7 @@ function ClientsPage() {
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">New Client</h3>
+              <h3 className="text-xl font-bold">{editingId ? 'Edit Client' : 'New Client'}</h3>
               <button onClick={() => setShowModal(false)} className="text-gray-400 text-2xl">×</button>
             </div>
             {error && <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg mb-4 text-sm">{error}</div>}
@@ -141,7 +171,7 @@ function ClientsPage() {
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Tax ID</label>
                 <input type="text" value={form.taxId}
@@ -154,9 +184,9 @@ function ClientsPage() {
                   className="flex-1 border border-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-50">
                   Cancel
                 </button>
-                <button onClick={handleCreate}
+                <button onClick={handleSave}
                   className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 font-semibold">
-                  Save
+                  {editingId ? 'Update' : 'Save'}
                 </button>
               </div>
             </div>
